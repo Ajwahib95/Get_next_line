@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/12 14:57:32 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/13 20:46:40 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*get_next_line(int fd)
 	static t_list	*stash;
 	char			*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = NULL;
 	ft_read(fd, &stash);
@@ -40,15 +40,18 @@ void	ft_read(int fd, t_list **stash)
 	char	*buffer;
 	int		bytes_read;
 
-	bytes_read = 1;
-	while (!find_newline(*stash) && bytes_read != 0)
+	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+	if (buffer == NULL)
+		return ;
+	while (!find_newline(*stash))
 	{
-		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-		if (buffer == NULL)
-			return ;
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1 || bytes_read == 0)
+		if (bytes_read == 0)
+			break ;
+		if (bytes_read == -1)
 		{
+			free_stash(*stash);
+			stash = NULL;
 			free(buffer);
 			return ;
 		}

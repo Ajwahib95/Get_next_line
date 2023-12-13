@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/13 16:38:57 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/13 20:50:25 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	*get_next_line(int fd)
 	static t_list	*stash[1024];
 	char			*line;
 
-	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
 		return (NULL);
 	line = NULL;
 	ft_read(fd, stash);
@@ -40,21 +40,25 @@ void	ft_read(int fd, t_list **stash)
 	char	*buffer;
 	ssize_t	bytes_read;
 
+	buffer = malloc(sizeof(char) * (size_t)(BUFFER_SIZE + 1));
+	if (buffer == NULL)
+		return ;
 	while (!find_newline(stash[fd]))
 	{
-		buffer = malloc(sizeof(char) * (size_t)(BUFFER_SIZE + 1));
-		if (buffer == NULL)
-			return ;
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1 || bytes_read == 0)
+		if (bytes_read == 0)
+			break ;
+		if (bytes_read == -1)
 		{
+			free_stash(*stash);
+			stash = NULL;
 			free(buffer);
 			return ;
 		}
 		buffer[bytes_read] = '\0';
 		fill_stash(stash, buffer, bytes_read, fd);
-		free(buffer);
 	}
+	free(buffer);
 }
 
 void	fill_stash(t_list **stash, char *buffer, int bytes_read, int fd)
