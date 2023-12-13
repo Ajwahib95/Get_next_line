@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/06 15:20:20 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/13 16:38:57 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 char	*get_next_line(int fd)
 {
-	static t_list	*stash[4096];
+	static t_list	*stash[1024];
 	char			*line;
 
-	if (fd < 0 || fd > 4095 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
+	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0 || read(fd, &line, 0) < 0)
 		return (NULL);
 	line = NULL;
 	ft_read(fd, stash);

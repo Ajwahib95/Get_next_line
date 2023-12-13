@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/06 14:33:43 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/12 14:57:32 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ void	ft_read(int fd, t_list **stash)
 		buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		if (buffer == NULL)
 			return ;
-		bytes_read = (int)read(fd, buffer, BUFFER_SIZE);
+		bytes_read = read(fd, buffer, BUFFER_SIZE);
 		if (bytes_read == -1 || bytes_read == 0)
 		{
 			free(buffer);
