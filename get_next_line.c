@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/13 20:46:40 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/15 18:38:16 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ char	*get_next_line(int fd)
 	if (stash == NULL)
 		return (NULL);
 	get_line(stash, &line);
+	clean_stash(&stash);
 	if (line[0] == '\0')
 	{
 		free_stash(stash);
@@ -31,14 +32,13 @@ char	*get_next_line(int fd)
 		free(line);
 		return (NULL);
 	}
-	clean_stash(&stash);
 	return (line);
 }
 
 void	ft_read(int fd, t_list **stash)
 {
 	char	*buffer;
-	int		bytes_read;
+	ssize_t	bytes_read;
 
 	buffer = malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	if (buffer == NULL)
@@ -51,14 +51,13 @@ void	ft_read(int fd, t_list **stash)
 		if (bytes_read == -1)
 		{
 			free_stash(*stash);
-			stash = NULL;
 			free(buffer);
 			return ;
 		}
 		buffer[bytes_read] = '\0';
 		fill_stash(stash, buffer, bytes_read);
-		free(buffer);
 	}
+	free(buffer);
 }
 
 void	fill_stash(t_list **stash, char *buffer, int bytes_read)
@@ -126,7 +125,7 @@ void	clean_stash(t_list **stash)
 	t_list	*clean_node;
 
 	clean_node = malloc(sizeof(t_list));
-	if (stash == NULL || clean_node == NULL)
+	if (clean_node == NULL)
 		return ;
 	clean_node->next = NULL;
 	last_node = ft_lstlast(*stash);

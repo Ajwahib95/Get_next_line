@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:08 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/06 15:19:35 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/15 18:40:03 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,15 +67,14 @@ void	allocate_line(char **line, t_list *stash)
 void	free_stash(t_list *stash)
 {
 	t_list	*tmp;
-	t_list	*tmp1;
 
 	tmp = stash;
-	while (tmp)
+	while (stash != NULL)
 	{
-		free(tmp->content);
-		tmp1 = tmp->next;
-		free(tmp);
-		tmp = tmp1;
+		tmp = stash->next;
+		free(stash->content);
+		free(stash);
+		stash = tmp;
 	}
 }
 

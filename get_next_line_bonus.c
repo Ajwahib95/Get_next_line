@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/13 20:50:25 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/15 18:39:22 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ char	*get_next_line(int fd)
 	if (stash[fd] == NULL)
 		return (NULL);
 	get_line(stash[fd], &line);
+	clean_stash(&stash[fd]);
 	if (line[0] == '\0')
 	{
 		free_stash(stash[fd]);
@@ -31,7 +32,6 @@ char	*get_next_line(int fd)
 		free(line);
 		return (NULL);
 	}
-	clean_stash(&stash[fd]);
 	return (line);
 }
 
