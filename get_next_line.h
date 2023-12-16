@@ -30,7 +30,7 @@ typedef struct s_list
 char				*get_next_line(int fd);
 void				ft_read(int fd, t_list **stash);
 void				fill_stash(t_list **stash, char *buffer, int bytes_read);
-void				get_line(t_list *stash, char **line);
+void				generate_line(t_list *stash, char **line);
 void				clean_stash(t_list **stash);
 
 int					find_newline(t_list *stash);

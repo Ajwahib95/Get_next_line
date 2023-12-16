@@ -17,13 +17,17 @@ char	*get_next_line(int fd)
 	static t_list	*stash[1024];
 	char			*line;
 
-	if (fd < 0 || fd > 1024 || BUFFER_SIZE <= 0)
-		return (NULL);
 	line = NULL;
+	if (BUFFER_SIZE <= 0 || (read(fd, line, 0) < 0))
+	{
+		free_stash(stash[fd]);
+		stash[fd] = NULL;
+		return (NULL);
+	}
 	ft_read(fd, stash);
 	if (stash[fd] == NULL)
 		return (NULL);
-	get_line(stash[fd], &line);
+	generate_line(stash[fd], &line);
 	clean_stash(&stash[fd]);
 	if (line[0] == '\0')
 	{
@@ -46,8 +50,6 @@ void	ft_read(int fd, t_list **stash)
 	while (!find_newline(stash[fd]))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == 0)
-			break ;
 		if (bytes_read == -1)
 		{
 			free_stash(*stash);
@@ -55,6 +57,8 @@ void	ft_read(int fd, t_list **stash)
 			free(buffer);
 			return ;
 		}
+		if (bytes_read == 0)
+			break ;
 		buffer[bytes_read] = '\0';
 		fill_stash(stash, buffer, bytes_read, fd);
 	}
@@ -90,7 +94,7 @@ void	fill_stash(t_list **stash, char *buffer, int bytes_read, int fd)
 	last_node->next = new_node;
 }
 
-void	get_line(t_list *stash, char **line)
+void	generate_line(t_list *stash, char **line)
 {
 	int	i;
 	int	j;
