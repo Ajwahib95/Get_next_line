@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:11 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/15 00:17:43 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/17 23:22:46 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 #  define BUFFER_SIZE 13
 # endif
 
-# include <fcntl.h>
 # include <stdlib.h>
 # include <unistd.h>
 

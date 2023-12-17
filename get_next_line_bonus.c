@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/15 18:39:22 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/17 22:53:03 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,15 +17,8 @@ char	*get_next_line(int fd)
 	static t_list	*stash[1024];
 	char			*line;
 
-	line = NULL;
-	if (BUFFER_SIZE <= 0 || (read(fd, line, 0) < 0))
-	{
-		free_stash(stash[fd]);
-		stash[fd] = NULL;
-		return (NULL);
-	}
 	ft_read(fd, stash);
-	if (stash[fd] == NULL)
+	if (!stash[fd])
 		return (NULL);
 	generate_line(stash[fd], &line);
 	clean_stash(&stash[fd]);
@@ -50,14 +43,7 @@ void	ft_read(int fd, t_list **stash)
 	while (!find_newline(stash[fd]))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1)
-		{
-			free_stash(*stash);
-			stash = NULL;
-			free(buffer);
-			return ;
-		}
-		if (bytes_read == 0)
+		if (bytes_read == -1 || bytes_read == -1)
 			break ;
 		buffer[bytes_read] = '\0';
 		fill_stash(stash, buffer, bytes_read, fd);
