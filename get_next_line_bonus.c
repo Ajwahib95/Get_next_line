@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/17 22:53:03 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/19 22:10:29 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,15 @@ char	*get_next_line(int fd)
 {
 	static t_list	*stash[1024];
 	char			*line;
+	int				check_error;
 
-	ft_read(fd, stash);
-	if (!stash[fd])
+	check_error = ft_read(fd, stash);
+	if (stash[fd] == NULL || check_error == -1)
+	{
+		free_stash(stash[fd]);
+		stash[fd] = NULL;
 		return (NULL);
+	}
 	generate_line(stash[fd], &line);
 	clean_stash(&stash[fd]);
 	if (line[0] == '\0')
@@ -32,23 +37,31 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-void	ft_read(int fd, t_list **stash)
+int	ft_read(int fd, t_list **stash)
 {
 	char	*buffer;
 	ssize_t	bytes_read;
 
 	buffer = malloc(sizeof(char) * (size_t)(BUFFER_SIZE + 1));
 	if (buffer == NULL)
-		return ;
+		return (0);
 	while (!find_newline(stash[fd]))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == -1 || bytes_read == -1)
+		if (bytes_read == 0)
 			break ;
+		if (bytes_read == -1)
+		{
+			free_stash(stash[fd]);
+			stash[fd] = NULL;
+			free(buffer);
+			return (-1);
+		}
 		buffer[bytes_read] = '\0';
 		fill_stash(stash, buffer, bytes_read, fd);
 	}
 	free(buffer);
+	return (0);
 }
 
 void	fill_stash(t_list **stash, char *buffer, int bytes_read, int fd)
@@ -85,8 +98,6 @@ void	generate_line(t_list *stash, char **line)
 	int	i;
 	int	j;
 
-	if (stash == NULL)
-		return ;
 	allocate_line(line, stash);
 	if (*line == NULL)
 		return ;

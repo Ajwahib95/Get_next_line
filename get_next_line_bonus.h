@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:11 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/17 23:23:06 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/19 22:08:05 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ typedef struct s_list
 }					t_list;
 
 char				*get_next_line(int fd);
-void				ft_read(int fd, t_list **stash);
+int					ft_read(int fd, t_list **stash);
 void				fill_stash(t_list **stash, char *buffer, int bytes_read,
 						int fd);
 void				generate_line(t_list *stash, char **line);

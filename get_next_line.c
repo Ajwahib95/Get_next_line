@@ -6,7 +6,7 @@
 /*   By: awahib <awahib@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 19:43:06 by awahib            #+#    #+#             */
-/*   Updated: 2023/12/17 23:09:27 by awahib           ###   ########.fr       */
+/*   Updated: 2023/12/19 22:07:59 by awahib           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,10 @@ char	*get_next_line(int fd)
 {
 	static t_list	*stash;
 	char			*line;
+	int				check_error;
 
-	ft_read(fd, &stash);
-	if (stash == NULL)
+	check_error = ft_read(fd, &stash);
+	if (stash == NULL || check_error == -1)
 		return (NULL);
 	generate_line(stash, &line);
 	clean_stash(&stash);
@@ -32,23 +33,31 @@ char	*get_next_line(int fd)
 	return (line);
 }
 
-void	ft_read(int fd, t_list **stash)
+int	ft_read(int fd, t_list **stash)
 {
 	char	*buffer;
 	ssize_t	bytes_read;
 
 	buffer = malloc(sizeof(char) * (size_t)(BUFFER_SIZE + 1));
 	if (buffer == NULL)
-		return ;
+		return (0);
 	while (!find_newline(*stash))
 	{
 		bytes_read = read(fd, buffer, BUFFER_SIZE);
-		if (bytes_read == 0 || bytes_read == -1)
+		if (bytes_read == 0)
 			break ;
+		if (bytes_read == -1)
+		{
+			free_stash(*stash);
+			*stash = NULL;
+			free(buffer);
+			return (-1);
+		}
 		buffer[bytes_read] = '\0';
 		fill_stash(stash, buffer, bytes_read);
 	}
 	free(buffer);
+	return (0);
 }
 
 void	fill_stash(t_list **stash, char *buffer, int bytes_read)
@@ -113,16 +122,16 @@ void	clean_stash(t_list **stash)
 	t_list	*last_node;
 	t_list	*clean_node;
 
+	i = 0;
+	last_node = ft_lstlast(*stash);
+	while (last_node->content[i] && last_node->content[i] != '\n')
+		i++;
+	if (last_node->content[i] && last_node->content[i] == '\n')
+		i++;
 	clean_node = malloc(sizeof(t_list));
 	if (clean_node == NULL)
 		return ;
 	clean_node->next = NULL;
-	last_node = ft_lstlast(*stash);
-	i = 0;
-	while (last_node->content[i] && last_node->content[i] != '\n')
-		i++;
-	if (last_node->content && last_node->content[i] == '\n')
-		i++;
 	clean_node->content = malloc(sizeof(char) * ((ft_strlen(last_node->content)
 					- i) + 1));
 	if (clean_node->content == NULL)
